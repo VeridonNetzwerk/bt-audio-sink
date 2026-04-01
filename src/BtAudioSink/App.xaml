@@ -1,0 +1,10 @@
+<Application x:Class="BtAudioSink.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Theme resource dictionary is merged at runtime based on OS version -->
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

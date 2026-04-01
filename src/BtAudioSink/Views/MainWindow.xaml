@@ -1,0 +1,257 @@
+<Window x:Class="BtAudioSink.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:BtAudioSink.Converters"
+        xmlns:vm="clr-namespace:BtAudioSink.ViewModels"
+        Title="BT Audio Sink"
+        Width="460" Height="620"
+        MinWidth="380" MinHeight="480"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True"
+        Icon="/Assets/app.ico">
+
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:InverseBoolConverter x:Key="InverseBool"/>
+        <converters:ConnectionStatusToBrushConverter x:Key="ConnectionStatusToBrush"/>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibility"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="{DynamicResource ContentPadding}" Background="{DynamicResource CardBackgroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Bluetooth icon -->
+                <TextBlock Grid.Column="0"
+                           Text="&#xE702;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="28"
+                           Foreground="{DynamicResource AccentBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,12,0"/>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="BT Audio Sink"
+                               FontSize="{DynamicResource HeaderFontSize}"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="Bluetooth A2DP Audio Receiver"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content area -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="{DynamicResource ContentPadding}">
+
+            <StackPanel Margin="{DynamicResource ContentPadding}">
+
+                <!-- ========== DEVICES SECTION ========== -->
+                <TextBlock Text="Paired Devices"
+                           Style="{DynamicResource SectionHeaderStyle}"/>
+
+                <!-- Device list -->
+                <ItemsControl ItemsSource="{Binding Devices}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:DeviceViewModel}">
+                            <Border Style="{DynamicResource DeviceItemBorderStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Device icon with status indicator -->
+                                    <Grid Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DeviceIcon}"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="24"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                        <!-- Connection status dot -->
+                                        <Ellipse Width="8" Height="8"
+                                                 Fill="{Binding IsConnected, Converter={StaticResource ConnectionStatusToBrush}}"
+                                                 HorizontalAlignment="Right"
+                                                 VerticalAlignment="Bottom"
+                                                 Margin="0,0,-2,-2"/>
+                                    </Grid>
+
+                                    <!-- Device name and status -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontWeight="Medium"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding StatusText}"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                                   Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Connect/Disconnect button -->
+                                    <Button Grid.Column="2"
+                                            Content="{Binding ButtonText}"
+                                            Command="{Binding ToggleConnectionCommand}"
+                                            Style="{DynamicResource PrimaryButtonStyle}"
+                                            VerticalAlignment="Center"
+                                            Margin="8,0,0,0"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- No devices message -->
+                <TextBlock Text="No paired Bluetooth audio devices found.&#x0A;Pair a device in Windows Bluetooth Settings first."
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           TextAlignment="Center"
+                           Margin="0,12"
+                           LineHeight="20">
+                    <TextBlock.Visibility>
+                        <Binding Path="Devices.Count" Converter="{StaticResource BoolToVisibility}" ConverterParameter="Invert">
+                            <Binding.FallbackValue>Collapsed</Binding.FallbackValue>
+                        </Binding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+
+                <!-- Action buttons -->
+                <WrapPanel Margin="0,8,0,0" HorizontalAlignment="Left">
+                    <Button Content="&#xE72C;  Refresh"
+                            FontFamily="Segoe MDL2 Assets, Segoe UI"
+                            Command="{Binding RefreshDevicesCommand}"
+                            Style="{DynamicResource SecondaryButtonStyle}"
+                            Margin="0,0,8,0"/>
+                    <Button Content="&#xE713;  Bluetooth Settings"
+                            FontFamily="Segoe MDL2 Assets, Segoe UI"
+                            Command="{Binding OpenBluetoothSettingsCommand}"
+                            Style="{DynamicResource SecondaryButtonStyle}"/>
+                </WrapPanel>
+
+                <!-- ========== NOW PLAYING SECTION ========== -->
+                <StackPanel Margin="{DynamicResource SectionMargin}">
+                    <TextBlock Text="Now Playing"
+                               Style="{DynamicResource SectionHeaderStyle}"/>
+
+                    <!-- Has media session -->
+                    <Border Style="{DynamicResource CardStyle}"
+                            Visibility="{Binding HasMediaSession, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel>
+                            <!-- Track info -->
+                            <StackPanel Margin="0,0,0,12"
+                                        Visibility="{Binding MediaDisplayText, Converter={StaticResource StringToVisibility}}">
+                                <TextBlock Text="{Binding MediaTitle, FallbackValue='Unknown Track'}"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding MediaArtist, FallbackValue=''}"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,4,0,0"
+                                           Visibility="{Binding MediaArtist, Converter={StaticResource StringToVisibility}}"/>
+                                <TextBlock Text="{Binding MediaAlbumTitle, FallbackValue=''}"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource TextDisabledBrush}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,2,0,0"
+                                           Visibility="{Binding MediaAlbumTitle, Converter={StaticResource StringToVisibility}}"/>
+                            </StackPanel>
+
+                            <!-- Playback controls -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="&#xE892;"
+                                        Command="{Binding PreviousTrackCommand}"
+                                        Style="{DynamicResource IconButtonStyle}"
+                                        ToolTip="Previous"/>
+                                <Button Content="{Binding PlayPauseIcon}"
+                                        Command="{Binding PlayPauseCommand}"
+                                        Style="{DynamicResource IconButtonStyle}"
+                                        ToolTip="{Binding PlayPauseTooltip}"
+                                        Margin="8,0"/>
+                                <Button Content="&#xE893;"
+                                        Command="{Binding NextTrackCommand}"
+                                        Style="{DynamicResource IconButtonStyle}"
+                                        ToolTip="Next"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- No media session -->
+                    <Border Style="{DynamicResource CardStyle}"
+                            Visibility="{Binding HasMediaSession, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                        <TextBlock Text="No active media session.&#x0A;Connect a device and start playing music."
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   TextAlignment="Center"
+                                   LineHeight="20"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- ========== SETTINGS SECTION ========== -->
+                <StackPanel Margin="{DynamicResource SectionMargin}">
+                    <TextBlock Text="Settings"
+                               Style="{DynamicResource SectionHeaderStyle}"/>
+
+                    <Border Style="{DynamicResource CardStyle}">
+                        <StackPanel>
+                            <CheckBox Content="Auto-reconnect on startup"
+                                      IsChecked="{Binding AutoReconnect}"
+                                      Style="{DynamicResource SettingsCheckBoxStyle}"/>
+                            <CheckBox Content="Run at Windows startup"
+                                      IsChecked="{Binding RunAtStartup}"
+                                      Style="{DynamicResource SettingsCheckBoxStyle}"/>
+                            <CheckBox Content="Start minimized to system tray"
+                                      IsChecked="{Binding StartMinimized}"
+                                      Style="{DynamicResource SettingsCheckBoxStyle}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Bottom spacer -->
+                <Border Height="8"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Status bar -->
+        <Border Grid.Row="2" Style="{DynamicResource StatusBarStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Connection indicator -->
+                <Ellipse Grid.Column="0"
+                         Width="8" Height="8"
+                         Fill="{Binding HasConnectedDevice, Converter={StaticResource ConnectionStatusToBrush}}"
+                         VerticalAlignment="Center"
+                         Margin="0,0,8,0"/>
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StatusText}"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

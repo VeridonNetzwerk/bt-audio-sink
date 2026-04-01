@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  BT Audio Sink - WiX v4 Installer Package
+  Produces an MSI installer that:
+  - Installs the application to Program Files
+  - Creates Start Menu shortcuts
+  - Supports clean uninstallation
+  - Registers upgrade support for future versions
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <!-- Define upgrade code (NEVER change this for the lifetime of the product) -->
+  <?define UpgradeCode = "8A3E72C1-5D9F-4B2A-A1C8-E7F39D4B6A21" ?>
+  <?define Manufacturer = "BT Audio Sink" ?>
+  <?define ProductName = "BT Audio Sink" ?>
+  <?define ProductVersion = "1.0.0" ?>
+
+  <Package Name="$(ProductName)"
+           Manufacturer="$(Manufacturer)"
+           Version="$(ProductVersion)"
+           UpgradeCode="$(UpgradeCode)"
+           Compressed="yes"
+           InstallerVersion="500">
+
+    <!-- Require elevated privileges for installation to Program Files -->
+    <SummaryInformation Description="$(ProductName) - Bluetooth A2DP Audio Sink for Windows" />
+
+    <!-- Embed all files in the MSI (single-file installer) -->
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Major upgrade: remove previous versions before installing new one -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!-- ==================== DIRECTORY STRUCTURE ==================== -->
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="BT Audio Sink">
+        <!-- Application files are harvested from the project reference -->
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="BT Audio Sink" />
+    </StandardDirectory>
+
+    <!-- ==================== COMPONENTS ==================== -->
+
+    <!-- Install all built application files -->
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.BtAudioSink.TargetDir)\**" />
+    </ComponentGroup>
+
+    <!-- Start Menu shortcut -->
+    <ComponentGroup Id="ShortcutComponents" Directory="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="B1C2D3E4-5F6A-7B8C-9D0E-F1A2B3C4D5E6">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="BT Audio Sink"
+                  Description="Bluetooth A2DP Audio Sink for Windows"
+                  Target="[INSTALLFOLDER]BtAudioSink.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+
+        <RemoveFolder Id="CleanUpShortcutFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\BtAudioSink"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Desktop shortcut (optional, user-selectable) -->
+    <ComponentGroup Id="DesktopShortcutComponents" Directory="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="C2D3E4F5-6A7B-8C9D-0E1F-A2B3C4D5E6F7">
+        <Shortcut Id="DesktopShortcutLink"
+                  Name="BT Audio Sink"
+                  Description="Bluetooth A2DP Audio Sink for Windows"
+                  Target="[INSTALLFOLDER]BtAudioSink.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\BtAudioSink"
+                       Name="desktopShortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- ==================== FEATURES ==================== -->
+
+    <Feature Id="MainFeature"
+             Title="BT Audio Sink"
+             Description="Bluetooth A2DP Audio Sink application"
+             Level="1"
+             AllowAbsent="no">
+
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentGroupRef Id="ShortcutComponents" />
+    </Feature>
+
+    <Feature Id="DesktopShortcutFeature"
+             Title="Desktop Shortcut"
+             Description="Create a shortcut on the desktop"
+             Level="1"
+             AllowAbsent="yes">
+      <ComponentGroupRef Id="DesktopShortcutComponents" />
+    </Feature>
+
+    <!-- ==================== ICON ==================== -->
+
+    <Icon Id="AppIcon.ico" SourceFile="$(var.BtAudioSink.TargetDir)\BtAudioSink.exe" />
+
+  </Package>
+</Wix>

@@ -1,0 +1,28 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BtAudioSink", "src\BtAudioSink\BtAudioSink.csproj", "{E7A52C1D-8B9F-4A3E-B6D2-F1C8A7E93D54}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BtAudioSink.Installer", "installer\BtAudioSink.Installer.wixproj", "{D3F19A7C-6E2B-4C81-9B5A-A8D47F2E1C36}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7A52C1D-8B9F-4A3E-B6D2-F1C8A7E93D54}.Debug|x64.ActiveCfg = Debug|x64
+		{E7A52C1D-8B9F-4A3E-B6D2-F1C8A7E93D54}.Debug|x64.Build.0 = Debug|x64
+		{E7A52C1D-8B9F-4A3E-B6D2-F1C8A7E93D54}.Release|x64.ActiveCfg = Release|x64
+		{E7A52C1D-8B9F-4A3E-B6D2-F1C8A7E93D54}.Release|x64.Build.0 = Release|x64
+		{D3F19A7C-6E2B-4C81-9B5A-A8D47F2E1C36}.Debug|x64.ActiveCfg = Debug|x64
+		{D3F19A7C-6E2B-4C81-9B5A-A8D47F2E1C36}.Debug|x64.Build.0 = Debug|x64
+		{D3F19A7C-6E2B-4C81-9B5A-A8D47F2E1C36}.Release|x64.ActiveCfg = Release|x64
+		{D3F19A7C-6E2B-4C81-9B5A-A8D47F2E1C36}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

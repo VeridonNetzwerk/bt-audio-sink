@@ -1,0 +1,70 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Release]
+        platform: [x64]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Generate icon
+      shell: powershell
+      run: .\scripts\generate-icon.ps1
+
+    - name: Restore dependencies
+      run: dotnet restore src/BtAudioSink/BtAudioSink.csproj
+
+    - name: Build
+      run: dotnet build src/BtAudioSink/BtAudioSink.csproj -c ${{ matrix.configuration }} -p:Platform=${{ matrix.platform }} --no-restore
+
+    - name: Publish (self-contained)
+      run: dotnet publish src/BtAudioSink/BtAudioSink.csproj -c ${{ matrix.configuration }} -r win-${{ matrix.platform }} --self-contained -o publish/${{ matrix.platform }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: BtAudioSink-${{ matrix.platform }}-${{ matrix.configuration }}
+        path: publish/${{ matrix.platform }}/
+        retention-days: 30
+
+  release:
+    needs: build
+    runs-on: windows-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: BtAudioSink-x64-Release
+        path: release/
+
+    - name: Create ZIP
+      shell: powershell
+      run: Compress-Archive -Path release/* -DestinationPath BtAudioSink-x64.zip
+
+    - name: Upload release ZIP
+      uses: actions/upload-artifact@v4
+      with:
+        name: BtAudioSink-Release-Package
+        path: BtAudioSink-x64.zip
+        retention-days: 90
