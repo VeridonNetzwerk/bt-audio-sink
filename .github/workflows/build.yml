@@ -25,7 +25,13 @@ jobs:
 
     - name: Generate icon
       shell: powershell
-      run: .\scripts\generate-icon.ps1
+      run: |
+        if (Test-Path .\scripts\generate-icon.ps1) {
+          .\scripts\generate-icon.ps1
+        }
+        else {
+          Write-Host "Skipping icon generation: scripts/generate-icon.ps1 not found."
+        }
 
     - name: Restore dependencies
       run: dotnet restore src/BtAudioSink/BtAudioSink.csproj

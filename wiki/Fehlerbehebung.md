@@ -1,5 +1,15 @@
 # Fehlerbehebung
 
+## Schnelluebersicht
+
+| Problem | Loesung |
+|---|---|
+| Kein Geraet sichtbar | Geraet zuerst in Windows koppeln, Bluetooth aktivieren, in der App neu laden |
+| "Unsupported OS" | Mindestens Windows 10 Version 2004 (Build 19041) verwenden |
+| Verbindung fehlgeschlagen | Bluetooth an beiden Geraeten kurz aus/an und erneut verbinden |
+| Kein Ton trotz Verbindung | Standard-Ausgabegeraet in Windows Sound-Einstellungen pruefen |
+| Mediensteuerung ohne Reaktion | AVRCP-Unterstuetzung des Geraets/der App pruefen |
+
 ## Kein Geraet in der Liste
 
 Pruefen:
@@ -23,6 +33,8 @@ Loesung:
 2. Bluetooth auf beiden Geraeten kurz aus/an
 3. Neu verbinden
 
+Wenn das Zielgeraet bereits mit einem anderen Audio-Sink verbunden ist, zuerst diese Verbindung trennen.
+
 ## Kein Ton trotz Verbindung
 
 Pruefen:
@@ -30,6 +42,8 @@ Pruefen:
 1. Standard-Ausgabegeraet in Windows Sound-Einstellungen
 2. Lautstaerke auf Smartphone und PC
 3. Exklusive Audiomodi anderer Software
+
+Hinweis: Der Stream wird auf dem aktuellen Standard-Ausgabegeraet von Windows ausgegeben.
 
 ## Mediensteuerung reagiert nicht
 

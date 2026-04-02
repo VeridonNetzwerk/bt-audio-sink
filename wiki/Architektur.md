@@ -9,6 +9,25 @@ BT Audio Sink trennt klar zwischen:
 
 So bleibt die Funktionalitaet identisch, waehrend das Design je nach Windows-Version wechselt.
 
+## Technologie-Stack
+
+- C# / .NET 8.0 mit WPF
+- Windows Runtime APIs: `AudioPlaybackConnection`, `DeviceInformation`, `GlobalSystemMediaTransportControlsSessionManager`
+- CommunityToolkit.Mvvm fuer MVVM-Struktur
+- H.NotifyIcon.Wpf fuer System-Tray-Integration
+- WiX Toolset v4 fuer den MSI-Installer
+
+## Adaptive UI
+
+Die App erkennt die Windows-Version zur Laufzeit und laedt das passende Theme.
+
+| Windows Version | Theme | Merkmale |
+|---|---|---|
+| Windows 10 (2004+) | Win10Theme | Klassische WPF-Optik, flache Controls |
+| Windows 11 | Win11Theme | Abgerundete Ecken, Mica, Fluent-Style, Segoe UI Variable |
+
+Die View- und ViewModel-Logik bleibt gleich. Nur Styles und Ressourcen unterscheiden sich je nach Betriebssystem.
+
 ## Schichten
 
 ## 1) Platform
