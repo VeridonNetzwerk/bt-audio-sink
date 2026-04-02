@@ -11,10 +11,8 @@
         Icon="/Assets/app.ico">
 
     <Window.Resources>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
-        <converters:InverseBoolConverter x:Key="InverseBool"/>
         <converters:ConnectionStatusToBrushConverter x:Key="ConnectionStatusToBrush"/>
-        <converters:StringToVisibilityConverter x:Key="StringToVisibility"/>
+        <converters:ZeroCountToVisibilityConverter x:Key="ZeroCountToVisibility"/>
     </Window.Resources>
 
     <Grid>
@@ -123,86 +121,27 @@
                            Foreground="{DynamicResource TextSecondaryBrush}"
                            TextAlignment="Center"
                            Margin="0,12"
-                           LineHeight="20">
-                    <TextBlock.Visibility>
-                        <Binding Path="Devices.Count" Converter="{StaticResource BoolToVisibility}" ConverterParameter="Invert">
-                            <Binding.FallbackValue>Collapsed</Binding.FallbackValue>
-                        </Binding>
-                    </TextBlock.Visibility>
-                </TextBlock>
+                           LineHeight="20"
+                           Visibility="{Binding Devices.Count, Converter={StaticResource ZeroCountToVisibility}}"/>
 
                 <!-- Action buttons -->
                 <WrapPanel Margin="0,8,0,0" HorizontalAlignment="Left">
-                    <Button Content="&#xE72C;  Refresh"
-                            FontFamily="Segoe MDL2 Assets, Segoe UI"
-                            Command="{Binding RefreshDevicesCommand}"
+                    <Button Command="{Binding RefreshDevicesCommand}"
                             Style="{DynamicResource SecondaryButtonStyle}"
-                            Margin="0,0,8,0"/>
-                    <Button Content="&#xE713;  Bluetooth Settings"
-                            FontFamily="Segoe MDL2 Assets, Segoe UI"
-                            Command="{Binding OpenBluetoothSettingsCommand}"
-                            Style="{DynamicResource SecondaryButtonStyle}"/>
-                </WrapPanel>
-
-                <!-- ========== NOW PLAYING SECTION ========== -->
-                <StackPanel Margin="{DynamicResource SectionMargin}">
-                    <TextBlock Text="Now Playing"
-                               Style="{DynamicResource SectionHeaderStyle}"/>
-
-                    <!-- Has media session -->
-                    <Border Style="{DynamicResource CardStyle}"
-                            Visibility="{Binding HasMediaSession, Converter={StaticResource BoolToVisibility}}">
-                        <StackPanel>
-                            <!-- Track info -->
-                            <StackPanel Margin="0,0,0,12"
-                                        Visibility="{Binding MediaDisplayText, Converter={StaticResource StringToVisibility}}">
-                                <TextBlock Text="{Binding MediaTitle, FallbackValue='Unknown Track'}"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextPrimaryBrush}"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding MediaArtist, FallbackValue=''}"
-                                           FontSize="13"
-                                           Foreground="{DynamicResource TextSecondaryBrush}"
-                                           TextTrimming="CharacterEllipsis"
-                                           Margin="0,4,0,0"
-                                           Visibility="{Binding MediaArtist, Converter={StaticResource StringToVisibility}}"/>
-                                <TextBlock Text="{Binding MediaAlbumTitle, FallbackValue=''}"
-                                           FontSize="12"
-                                           Foreground="{DynamicResource TextDisabledBrush}"
-                                           TextTrimming="CharacterEllipsis"
-                                           Margin="0,2,0,0"
-                                           Visibility="{Binding MediaAlbumTitle, Converter={StaticResource StringToVisibility}}"/>
-                            </StackPanel>
-
-                            <!-- Playback controls -->
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="&#xE892;"
-                                        Command="{Binding PreviousTrackCommand}"
-                                        Style="{DynamicResource IconButtonStyle}"
-                                        ToolTip="Previous"/>
-                                <Button Content="{Binding PlayPauseIcon}"
-                                        Command="{Binding PlayPauseCommand}"
-                                        Style="{DynamicResource IconButtonStyle}"
-                                        ToolTip="{Binding PlayPauseTooltip}"
-                                        Margin="8,0"/>
-                                <Button Content="&#xE893;"
-                                        Command="{Binding NextTrackCommand}"
-                                        Style="{DynamicResource IconButtonStyle}"
-                                        ToolTip="Next"/>
-                            </StackPanel>
+                            Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0"/>
+                            <TextBlock Text="Refresh" FontFamily="Segoe UI"/>
                         </StackPanel>
-                    </Border>
-
-                    <!-- No media session -->
-                    <Border Style="{DynamicResource CardStyle}"
-                            Visibility="{Binding HasMediaSession, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
-                        <TextBlock Text="No active media session.&#x0A;Connect a device and start playing music."
-                                   Foreground="{DynamicResource TextSecondaryBrush}"
-                                   TextAlignment="Center"
-                                   LineHeight="20"/>
-                    </Border>
-                </StackPanel>
+                    </Button>
+                    <Button Command="{Binding OpenBluetoothSettingsCommand}"
+                            Style="{DynamicResource SecondaryButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0"/>
+                            <TextBlock Text="Bluetooth Settings" FontFamily="Segoe UI"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
 
                 <!-- ========== SETTINGS SECTION ========== -->
                 <StackPanel Margin="{DynamicResource SectionMargin}">

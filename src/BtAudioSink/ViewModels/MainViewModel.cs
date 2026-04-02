@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using BtAudioSink.Bluetooth;
-using BtAudioSink.Media;
 using BtAudioSink.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,14 +9,12 @@ using CommunityToolkit.Mvvm.Input;
 namespace BtAudioSink.ViewModels;
 
 /// <summary>
-/// Main ViewModel orchestrating all application logic: Bluetooth device management,
-/// media controls, settings, and UI state.
+/// Main ViewModel orchestrating Bluetooth device management, settings, and UI state.
 /// </summary>
 public sealed partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly BluetoothDeviceService _deviceService;
     private readonly AudioPlaybackService _audioService;
-    private readonly MediaControlService _mediaService;
     private readonly SettingsManager _settingsManager;
     private bool _disposed;
 
@@ -36,60 +33,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     private int _connectedDeviceCount;
 
     public bool HasConnectedDevice => ConnectedDeviceCount > 0;
-
-    // --- Media state ---
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(MediaDisplayText))]
-    private string? _mediaTitle;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(MediaDisplayText))]
-    private string? _mediaArtist;
-
-    [ObservableProperty]
-    private string? _mediaAlbumTitle;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PlayPauseIcon))]
-    [NotifyPropertyChangedFor(nameof(PlayPauseTooltip))]
-    private bool _isPlaying;
-
-    [ObservableProperty]
-    private bool _hasMediaSession;
-
-    /// <summary>
-    /// Combined display text for current media (title - artist).
-    /// </summary>
-    public string? MediaDisplayText
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(MediaTitle) && string.IsNullOrEmpty(MediaArtist))
-            {
-                return null;
-            }
-
-            if (string.IsNullOrEmpty(MediaArtist))
-            {
-                return MediaTitle;
-            }
-
-            if (string.IsNullOrEmpty(MediaTitle))
-            {
-                return MediaArtist;
-            }
-
-            return $"{MediaTitle} — {MediaArtist}";
-        }
-    }
-
-    /// <summary>
-    /// Play/pause button icon (Segoe MDL2 Assets).
-    /// </summary>
-    public string PlayPauseIcon => IsPlaying ? "\uE769" : "\uE768"; // Pause : Play
-
-    public string PlayPauseTooltip => IsPlaying ? "Pause" : "Play";
 
     // --- Settings ---
 
@@ -125,26 +68,21 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public MainViewModel(
         BluetoothDeviceService deviceService,
         AudioPlaybackService audioService,
-        MediaControlService mediaService,
         SettingsManager settingsManager)
     {
         _deviceService = deviceService;
         _audioService = audioService;
-        _mediaService = mediaService;
         _settingsManager = settingsManager;
 
         // Wire up events
         _deviceService.DevicesChanged += OnDevicesChanged;
         _audioService.ConnectionChanged += OnConnectionChanged;
-        _mediaService.MediaPropertiesChanged += OnMediaPropertiesChanged;
-        _mediaService.PlaybackStatusChanged += OnPlaybackStatusChanged;
-        _mediaService.SessionAvailabilityChanged += OnSessionAvailabilityChanged;
     }
 
     /// <summary>
-    /// Initializes the ViewModel: loads settings, starts device discovery, initializes media service.
+    /// Initializes the ViewModel: loads settings and starts device discovery.
     /// </summary>
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
         // Load settings
         _settingsManager.Load();
@@ -155,9 +93,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
         // Start  device discovery
         _deviceService.StartWatching();
-
-        // Initialize media controls
-        await _mediaService.InitializeAsync();
 
         // Auto-reconnect to last connected devices
         if (AutoReconnect && _settingsManager.Current.LastConnectedDevices.Count > 0)
@@ -173,6 +108,8 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
                 });
             }
         }
+
+        return Task.CompletedTask;
     }
 
     // --- Device management ---
@@ -293,32 +230,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         });
     }
 
-    private void OnMediaPropertiesChanged(object? sender, MediaMetadataChangedEventArgs e)
-    {
-        DispatchToUI(() =>
-        {
-            MediaTitle = e.Title;
-            MediaArtist = e.Artist;
-            MediaAlbumTitle = e.AlbumTitle;
-        });
-    }
-
-    private void OnPlaybackStatusChanged(object? sender, PlayerPlaybackStatusChangedEventArgs e)
-    {
-        DispatchToUI(() =>
-        {
-            IsPlaying = e.IsPlaying;
-        });
-    }
-
-    private void OnSessionAvailabilityChanged(object? sender, bool hasSession)
-    {
-        DispatchToUI(() =>
-        {
-            HasMediaSession = hasSession;
-        });
-    }
-
     // --- Commands ---
 
     [RelayCommand]
@@ -326,24 +237,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     {
         StatusText = "Scanning for devices...";
         _deviceService.RefreshDevices();
-    }
-
-    [RelayCommand]
-    private async Task PlayPauseAsync()
-    {
-        await _mediaService.PlayPauseAsync();
-    }
-
-    [RelayCommand]
-    private async Task NextTrackAsync()
-    {
-        await _mediaService.NextAsync();
-    }
-
-    [RelayCommand]
-    private async Task PreviousTrackAsync()
-    {
-        await _mediaService.PreviousAsync();
     }
 
     [RelayCommand]
@@ -449,14 +342,10 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
         _deviceService.DevicesChanged -= OnDevicesChanged;
         _audioService.ConnectionChanged -= OnConnectionChanged;
-        _mediaService.MediaPropertiesChanged -= OnMediaPropertiesChanged;
-        _mediaService.PlaybackStatusChanged -= OnPlaybackStatusChanged;
-        _mediaService.SessionAvailabilityChanged -= OnSessionAvailabilityChanged;
 
         SaveConnectedDevices();
         _settingsManager.Save();
 
-        _mediaService.Dispose();
         _audioService.Dispose();
         _deviceService.Dispose();
     }

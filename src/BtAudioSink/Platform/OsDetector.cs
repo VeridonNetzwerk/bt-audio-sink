@@ -6,6 +6,7 @@ namespace BtAudioSink.Platform;
 public static class OsDetector
 {
     private static WindowsVersion? _cachedVersion;
+    private static int? _cachedBuildNumber;
 
     public static WindowsVersion DetectedVersion => _cachedVersion ??= Detect();
 
@@ -13,12 +14,24 @@ public static class OsDetector
 
     public static bool IsWindows10 => DetectedVersion == WindowsVersion.Windows10;
 
-    public static int BuildNumber { get; private set; }
+    public static int BuildNumber
+    {
+        get
+        {
+            EnsureDetected();
+            return _cachedBuildNumber ?? 0;
+        }
+    }
+
+    private static void EnsureDetected()
+    {
+        _ = DetectedVersion;
+    }
 
     private static WindowsVersion Detect()
     {
         var version = Environment.OSVersion.Version;
-        BuildNumber = version.Build;
+        _cachedBuildNumber = version.Build;
 
         if (version.Build >= 22000)
         {

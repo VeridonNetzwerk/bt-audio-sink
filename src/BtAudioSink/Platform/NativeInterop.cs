@@ -7,6 +7,14 @@ namespace BtAudioSink.Platform;
 /// </summary>
 public static class NativeInterop
 {
+    public const byte VK_MEDIA_NEXT_TRACK = 0xB0;
+    public const byte VK_MEDIA_PREV_TRACK = 0xB1;
+    public const byte VK_MEDIA_STOP = 0xB2;
+    public const byte VK_MEDIA_PLAY_PAUSE = 0xB3;
+
+    private const uint INPUT_KEYBOARD = 1;
+    private const uint KEYEVENTF_KEYUP = 0x0002;
+
     // DWM attributes
     public const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
     public const int DWMWA_MICA_EFFECT = 1029;
@@ -24,6 +32,33 @@ public static class NativeInterop
         int attribute,
         ref int value,
         int size);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct INPUT
+    {
+        public uint type;
+        public InputUnion U;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    private struct InputUnion
+    {
+        [FieldOffset(0)]
+        public KEYBDINPUT ki;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct KEYBDINPUT
+    {
+        public ushort wVk;
+        public ushort wScan;
+        public uint dwFlags;
+        public uint time;
+        public IntPtr dwExtraInfo;
+    }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
     [StructLayout(LayoutKind.Sequential)]
     public struct MARGINS
@@ -54,9 +89,13 @@ public static class NativeInterop
     public const uint RRF_RT_REG_DWORD = 0x00000010;
 
     /// <summary>
-    /// Returns true if the system is using a light taskbar/system theme.
+    /// Returns true if the selected Windows theme scope is light.
     /// </summary>
-    public static bool IsLightTheme()
+    /// <param name="useAppsTheme">
+    /// true = AppsUseLightTheme (recommended for app UI),
+    /// false = SystemUsesLightTheme (taskbar/system surfaces).
+    /// </param>
+    public static bool IsLightTheme(bool useAppsTheme = true)
     {
         try
         {
@@ -65,7 +104,7 @@ public static class NativeInterop
             int result = RegGetValueW(
                 HKEY_CURRENT_USER,
                 @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize",
-                "SystemUsesLightTheme",
+                useAppsTheme ? "AppsUseLightTheme" : "SystemUsesLightTheme",
                 RRF_RT_REG_DWORD,
                 IntPtr.Zero,
                 ref value,
@@ -121,5 +160,48 @@ public static class NativeInterop
     {
         var margins = new MARGINS { Left = -1, Top = -1, Right = -1, Bottom = -1 };
         DwmExtendFrameIntoClientArea(hwnd, ref margins);
+    }
+
+    /// <summary>
+    /// Sends a multimedia key (play/pause/next/previous) to the system.
+    /// This provides an AVRCP-like fallback path when GSMTC has no active session.
+    /// </summary>
+    public static void SendMediaKey(byte virtualKey)
+    {
+        var inputs = new INPUT[]
+        {
+            new()
+            {
+                type = INPUT_KEYBOARD,
+                U = new InputUnion
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = virtualKey,
+                        wScan = 0,
+                        dwFlags = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            },
+            new()
+            {
+                type = INPUT_KEYBOARD,
+                U = new InputUnion
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = virtualKey,
+                        wScan = 0,
+                        dwFlags = KEYEVENTF_KEYUP,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            }
+        };
+
+        _ = SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<INPUT>());
     }
 }

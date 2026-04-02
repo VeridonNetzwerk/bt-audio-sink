@@ -52,7 +52,7 @@ public partial class MainWindow : Window
         }
 
         // Set dark mode based on system theme
-        bool isLight = NativeInterop.IsLightTheme();
+        bool isLight = NativeInterop.IsLightTheme(useAppsTheme: true);
         NativeInterop.SetImmersiveDarkMode(hwnd, !isLight);
 
         // Extend frame for composition
@@ -63,7 +63,36 @@ public partial class MainWindow : Window
         {
             // Make the WPF background semi-transparent so Mica shows through
             Background = new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromArgb(200, 245, 245, 245));
+                System.Windows.Media.Color.FromArgb(200, 232, 232, 232));
+        }
+    }
+
+    /// <summary>
+    /// Applies dark/light mode DWM attributes when Windows app theme changes.
+    /// </summary>
+    public void ApplySystemThemeMode(bool isLight)
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        if (hwnd == IntPtr.Zero)
+        {
+            return;
+        }
+
+        if (OsDetector.IsWindows11)
+        {
+            NativeInterop.SetImmersiveDarkMode(hwnd, !isLight);
+            NativeInterop.ExtendFrameIntoClientArea(hwnd);
+
+            if (!isLight)
+            {
+                Background = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(200, 31, 31, 31));
+            }
+            else
+            {
+                Background = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(200, 232, 232, 232));
+            }
         }
     }
 

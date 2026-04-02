@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.IO;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Microsoft.Win32;
 using BtAudioSink.Bluetooth;
-using BtAudioSink.Media;
 using BtAudioSink.Platform;
 using BtAudioSink.Settings;
 using BtAudioSink.ViewModels;
@@ -23,11 +23,11 @@ public partial class App : Application
     private TaskbarIcon? _trayIcon;
     private MainWindow? _mainWindow;
     private MainViewModel? _viewModel;
+    private ResourceDictionary? _activeThemeDictionary;
 
     // Services
     private BluetoothDeviceService? _deviceService;
     private AudioPlaybackService? _audioService;
-    private MediaControlService? _mediaService;
     private SettingsManager? _settingsManager;
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -85,15 +85,16 @@ public partial class App : Application
 
         // Load theme based on detected OS version
         LoadTheme();
+        SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
 
         // Initialize services
         _settingsManager = new SettingsManager();
+        _settingsManager.Load();
         _deviceService = new BluetoothDeviceService();
         _audioService = new AudioPlaybackService();
-        _mediaService = new MediaControlService();
 
         // Create ViewModel
-        _viewModel = new MainViewModel(_deviceService, _audioService, _mediaService, _settingsManager);
+        _viewModel = new MainViewModel(_deviceService, _audioService, _settingsManager);
         _viewModel.ExitRequested += OnExitRequested;
         _viewModel.ShowWindowRequested += OnShowWindowRequested;
         _viewModel.HideWindowRequested += OnHideWindowRequested;
@@ -120,19 +121,46 @@ public partial class App : Application
     /// </summary>
     private void LoadTheme()
     {
-        string themeUri = OsDetector.IsWindows11
-            ? "Themes/Win11Theme.xaml"
-            : "Themes/Win10Theme.xaml";
+        ApplyModeTheme();
+    }
 
-        var theme = new ResourceDictionary
+    private void ApplyModeTheme()
+    {
+        bool isLight = NativeInterop.IsLightTheme(useAppsTheme: true);
+        string themeUri = OsDetector.IsWindows11
+            ? (isLight ? "Themes/Win11Theme.xaml" : "Themes/Win11DarkTheme.xaml")
+            : (isLight ? "Themes/Win10Theme.xaml" : "Themes/Win10DarkTheme.xaml");
+
+        if (_activeThemeDictionary != null)
+        {
+            Resources.MergedDictionaries.Remove(_activeThemeDictionary);
+            _activeThemeDictionary = null;
+        }
+
+        _activeThemeDictionary = new ResourceDictionary
         {
             Source = new Uri(themeUri, UriKind.Relative)
         };
 
         Resources.MergedDictionaries.Clear();
-        Resources.MergedDictionaries.Add(theme);
+        Resources.MergedDictionaries.Add(_activeThemeDictionary);
+
+        if (_mainWindow != null)
+        {
+            _mainWindow.ApplySystemThemeMode(isLight);
+        }
 
         Debug.WriteLine($"Loaded theme: {themeUri} (Build {OsDetector.BuildNumber})");
+    }
+
+    private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        if (e.Category == UserPreferenceCategory.General ||
+            e.Category == UserPreferenceCategory.Color ||
+            e.Category == UserPreferenceCategory.VisualStyle)
+        {
+            Dispatcher.Invoke(ApplyModeTheme);
+        }
     }
 
     /// <summary>
@@ -146,14 +174,22 @@ public partial class App : Application
             ContextMenu = CreateTrayContextMenu(),
         };
 
-        // Load icon from application resources
+        // Load icon from disk first (most reliable for tray), then fall back.
         try
         {
-            var iconUri = new Uri("pack://application:,,,/Assets/app.ico");
-            var resourceInfo = GetResourceStream(iconUri);
-            if (resourceInfo?.Stream != null)
+            var fileIconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "app.ico");
+            if (File.Exists(fileIconPath))
             {
-                _trayIcon.Icon = new System.Drawing.Icon(resourceInfo.Stream);
+                _trayIcon.Icon = new System.Drawing.Icon(fileIconPath);
+            }
+            else
+            {
+                var iconUri = new Uri("pack://application:,,,/Assets/app.ico");
+                var resourceInfo = GetResourceStream(iconUri);
+                if (resourceInfo?.Stream != null)
+                {
+                    _trayIcon.Icon = new System.Drawing.Icon(resourceInfo.Stream);
+                }
             }
         }
         catch (Exception ex)
@@ -165,6 +201,9 @@ public partial class App : Application
 
         // Left-click toggles window visibility
         _trayIcon.TrayLeftMouseUp += (_, _) => _viewModel?.ToggleWindowCommand.Execute(null);
+
+        // Ensure the icon is created immediately in notification area.
+        _trayIcon.ForceCreate();
     }
 
     /// <summary>
@@ -276,6 +315,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         _trayIcon?.Dispose();
         _singleInstanceMutex?.Dispose();
         base.OnExit(e);

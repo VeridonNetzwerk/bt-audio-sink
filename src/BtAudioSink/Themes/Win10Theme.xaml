@@ -17,6 +17,7 @@
     <Color x:Key="StatusBarBackgroundColor">#E8E8E8</Color>
     <Color x:Key="SuccessColor">#107C10</Color>
     <Color x:Key="ErrorColor">#D13438</Color>
+    <Color x:Key="SubtleHoverColor">#E8E8E8</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
@@ -31,6 +32,7 @@
     <SolidColorBrush x:Key="StatusBarBackgroundBrush" Color="{StaticResource StatusBarBackgroundColor}"/>
     <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
     <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="SubtleHoverBrush" Color="{StaticResource SubtleHoverColor}"/>
 
     <!-- Layout values -->
     <CornerRadius x:Key="CardCornerRadius">0</CornerRadius>
@@ -120,11 +122,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="#E8E8E8"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="{StaticResource SubtleHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.5"/>
@@ -156,11 +154,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="#E8E8E8"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="{StaticResource SubtleHoverBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.4"/>

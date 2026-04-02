@@ -27,8 +27,12 @@ public sealed class SettingsManager
 
     public SettingsManager()
     {
-        var appDir = AppContext.BaseDirectory;
-        _settingsFilePath = Path.Combine(appDir, SettingsFileName);
+        var appDataDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "BtAudioSink");
+
+        Directory.CreateDirectory(appDataDir);
+        _settingsFilePath = Path.Combine(appDataDir, SettingsFileName);
     }
 
     /// <summary>

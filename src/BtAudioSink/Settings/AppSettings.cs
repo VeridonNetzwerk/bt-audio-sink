@@ -18,7 +18,7 @@ public sealed class AppSettings
     /// <summary>
     /// Whether the application should start minimized to the system tray.
     /// </summary>
-    public bool StartMinimized { get; set; } = true;
+    public bool StartMinimized { get; set; } = false;
 
     /// <summary>
     /// Device IDs of last connected Bluetooth devices (for auto-reconnect).

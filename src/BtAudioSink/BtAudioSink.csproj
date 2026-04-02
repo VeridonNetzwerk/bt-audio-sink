@@ -26,4 +26,12 @@
     <Resource Include="Assets\app.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\platform-tools\**\*">
+      <Link>platform-tools\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
