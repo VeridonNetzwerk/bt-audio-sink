@@ -1,42 +1,42 @@
-# MSI-Installer (WiX)
+# MSI Installer (WiX)
 
-## Ziel
+## Goal
 
-Das MSI-Setup installiert BT Audio Sink sauber auf Windows-Systemen und unterstuetzt Upgrade/Uninstall.
+The MSI setup installs BT Audio Sink cleanly on Windows systems and supports upgrade and uninstall scenarios.
 
-## Technologie
+## Technology
 
 - WiX Toolset v4
-- Projekt: `installer/BtAudioSink.Installer.wixproj`
-- Hauptdefinition: `installer/Package.wxs`
+- Project: `installer/BtAudioSink.Installer.wixproj`
+- Main definition: `installer/Package.wxs`
 
-## Was der Installer macht
+## What the installer does
 
-- Installation nach `Program Files\\BT Audio Sink`
-- Startmenue-Verknuepfung
-- Optionale Desktop-Verknuepfung
-- Upgrade bestehender Versionen (MajorUpgrade)
-- Uninstall-Unterstuetzung
+- Installs to `Program Files\\BT Audio Sink`
+- Creates a Start Menu shortcut
+- Optional desktop shortcut
+- Upgrades existing versions through `MajorUpgrade`
+- Supports uninstall
 
-## Build des MSI
+## Building the MSI
 
 ```powershell
-# falls noch nicht installiert
+# if not installed yet
 dotnet tool install --global wix
 
-# MSI bauen
+# build the MSI
 dotnet build installer/BtAudioSink.Installer.wixproj -c Release
 ```
 
-## Ausgabe
+## Output
 
-Die MSI liegt danach unter:
+The MSI is generated here:
 
 - `installer/bin/Release/`
 
-## Best Practices fuer Produktivbetrieb
+## Best practices for production use
 
-- EXE und MSI digital signieren
-- Versionierung strikt beibehalten
-- UpgradeCode nie aendern
-- Vor Release immer frische Install + Upgrade + Uninstall testen
+- Digitally sign the EXE and MSI
+- Keep versioning consistent
+- Never change the `UpgradeCode`
+- Before every release, test clean install, upgrade, and uninstall

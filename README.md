@@ -42,13 +42,13 @@ BT Audio Sink turns your Windows PC into a Bluetooth audio receiver (A2DP Sink).
 ## Installation
 
 ### Option A: MSI Installer
-Download the latest MSI installer from [Releases](../../releases) and run it. The installer:
+Download the latest MSI installer from [Releases](https://github.com/VeridonNetzwerk/bt-audio-sink/releases) and run it. The installer:
 - Installs to `Program Files\BT Audio Sink`
 - Creates a Start Menu shortcut
 - Supports clean uninstallation
 
 ### Option B: Portable
-Download the ZIP archive from [Releases](../../releases), extract to any folder, and run `BtAudioSink.exe`.
+Download the ZIP archive from [Releases](https://github.com/VeridonNetzwerk/bt-audio-sink/releases), extract to any folder, and run `BtAudioSink.exe`.
 
 ## Usage
 
@@ -57,7 +57,8 @@ Download the ZIP archive from [Releases](../../releases), extract to any folder,
 3. **Click the tray icon** to open the device picker
 4. **Select your device** and click **Connect**
 5. **Play music** on your phone — audio streams to your PC speakers
-6. **Control playback** using the media controls in the app or on your phone
+6. **Control playback** using the media buttons in the app (**Previous / Play-Pause / Next**)
+7. **Use keyboard multimedia keys** (Play/Pause, Next, Previous) while BT Audio Sink is running
 
 ### System Tray
 
@@ -92,10 +93,15 @@ Full documentation is available in the **[GitHub Wiki](https://github.com/Verido
 | Page | Description |
 |------|-------------|
 | [Home](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Home) | Overview and navigation |
+| [Quick Start](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Quick-Start) | Fast setup and first connection |
 | [Installation](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Installation) | Step-by-step first-time setup |
-| [Bedienung](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Bedienung) | App usage and controls |
-| [Architektur](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Architektur) | Architecture and component overview |
-| [Fehlerbehebung](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Fehlerbehebung) | Common errors and fixes |
+| [Usage](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Usage) | App usage and controls |
+| [System-Tray](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/System-Tray) | Tray behavior and actions |
+| [Settings](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Settings) | Configuration options |
+| [Architecture](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Architecture) | Architecture and component overview |
+| [Developer Build](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Developer-Build) | Build, publish and debug from source |
+| [MSI-Installer](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/MSI-Installer) | Packaging with WiX |
+| [Troubleshooting](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/Troubleshooting) | Common errors and fixes |
 | [FAQ](https://github.com/VeridonNetzwerk/bt-audio-sink/wiki/FAQ) | Frequently asked questions |
 
 ---

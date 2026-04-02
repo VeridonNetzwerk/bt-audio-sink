@@ -1,28 +1,28 @@
 # FAQ
 
-## Ist BT Audio Sink ein Mikrofon-Empfaenger?
+## Is BT Audio Sink a microphone receiver?
 
-Nein. Die App ist fuer Bluetooth-Audio-Streaming als A2DP Sink gedacht.
+No. The app is designed for Bluetooth audio streaming as an A2DP sink.
 
-## Funktioniert es mit iOS und Android?
+## Does it work with iOS and Android?
 
-Ja, solange das Geraet A2DP/AVRCP normal unterstuetzt.
+Yes, as long as the device supports A2DP and AVRCP normally.
 
-## Kann ich mehrere Geraete gleichzeitig verbinden?
+## Can I connect multiple devices at the same time?
 
-Technisch ja. Das Verhalten kann je nach Bluetooth-Hardware und Windows-Stack variieren.
+Technically yes. Behavior can vary depending on the Bluetooth hardware and the Windows stack.
 
-## Warum gibt es zwei UI-Designs?
+## Why are there two UI designs?
 
-Die App passt sich automatisch an das Betriebssystem an:
+The app adapts automatically to the operating system:
 
-- Windows 10: klassisch/funktional
-- Windows 11: modern/Fluent
+- Windows 10: classic / functional
+- Windows 11: modern / Fluent
 
-## Muss ich etwas manuell konfigurieren fuer Win10/Win11?
+## Do I need to configure anything manually for Windows 10 or Windows 11?
 
-Nein. Die Erkennung erfolgt automatisch beim Start.
+No. Detection happens automatically on startup.
 
-## Ist die App Open Source?
+## Is the app open source?
 
-Ja. Das Projekt ist fuer GitHub ausgelegt und unter MIT-Lizenz dokumentiert.
+Yes. The project is hosted on GitHub and documented under the MIT license.

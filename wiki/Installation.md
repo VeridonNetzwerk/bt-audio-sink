@@ -1,30 +1,30 @@
 # Installation
 
-## Variante A: MSI (empfohlen)
+## Option A: MSI (recommended)
 
-1. Lade die aktuelle MSI-Datei aus den Releases.
-2. Starte den Installer mit Doppelklick.
-3. Folge dem Setup-Assistenten.
-4. Optional: Desktop-Verknuepfung mitinstallieren.
+1. Download the latest MSI from the Releases page.
+2. Start the installer with a double click.
+3. Follow the setup wizard.
+4. Optionally install the desktop shortcut.
 
-### Ergebnis
+### Result
 
-- Installation unter `Program Files\\BT Audio Sink`
-- Startmenue-Eintrag
-- Saubere Deinstallation ueber Apps & Features
+- Installed under `Program Files\\BT Audio Sink`
+- Start Menu entry
+- Clean uninstall through Apps & Features
 
-## Variante B: Portable
+## Option B: Portable
 
-1. ZIP aus Releases herunterladen.
-2. In beliebigen Ordner entpacken.
-3. `BtAudioSink.exe` starten.
+1. Download the ZIP package from Releases.
+2. Extract it to any folder.
+3. Start `BtAudioSink.exe`.
 
-## Deinstallation
+## Uninstall
 
-- MSI-Installation: Windows Einstellungen -> Apps -> BT Audio Sink -> Deinstallieren.
-- Portable: Ordner loeschen.
+- MSI installation: Windows Settings -> Apps -> BT Audio Sink -> Uninstall.
+- Portable build: delete the folder.
 
-## Hinweise
+## Notes
 
-- Beim ersten Start kann SmartScreen fragen. Das ist bei unsignierten Builds normal.
-- Fuer produktive Verteilung empfiehlt sich Code Signing.
+- SmartScreen may prompt on first launch. This is normal for unsigned builds.
+- Code signing is recommended for production distribution.

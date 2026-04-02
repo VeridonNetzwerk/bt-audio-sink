@@ -1,20 +1,20 @@
 ## BT Audio Sink
 
-- [Startseite](Home)
-- [Schnellstart](Schnellstart)
+- [Home](Home)
+- [Quick Start](Quick-Start)
 - [Installation](Installation)
-- [Bedienung](Bedienung)
+- [Usage](Usage)
 - [System-Tray](System-Tray)
-- [Einstellungen](Einstellungen)
+- [Settings](Settings)
 
-## Hilfe
+## Help
 
-- [Fehlerbehebung](Fehlerbehebung)
+- [Troubleshooting](Troubleshooting)
 - [FAQ](FAQ)
 
-## Entwickler
+## Developer
 
-- [Architektur](Architektur)
-- [Build fuer Entwickler](Build-fuer-Entwickler)
+- [Architecture](Architecture)
+- [Developer Build](Developer-Build)
 - [MSI-Installer](MSI-Installer)
-- [Live-Demo Ablauf](Live-Demo-Ablauf)
+- [Live Demo Flow](Live-Demo-Flow)

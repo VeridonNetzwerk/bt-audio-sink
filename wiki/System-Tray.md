@@ -1,22 +1,22 @@
 # System-Tray
 
-BT Audio Sink laeuft im Notification Area / System-Tray.
+BT Audio Sink runs in the Windows notification area / system tray.
 
-## Linksklick auf Tray-Icon
+## Left-click on the tray icon
 
-- Hauptfenster ein- oder ausblenden
+- Show or hide the main window
 
-## Rechtsklick auf Tray-Icon
+## Right-click on the tray icon
 
-Kontextmenue mit:
+Context menu with:
 
 - Show Window
 - Bluetooth Settings
 - Refresh Devices
 - Exit
 
-## Verhalten beim Schliessen
+## Behavior when closing the window
 
-- Das Schliessen des Fensters beendet die App nicht.
-- Stattdessen wird nur minimiert/versteckt.
-- Beenden erfolgt ueber **Exit** im Tray-Menue.
+- Closing the window does not exit the app.
+- The app is only minimized or hidden instead.
+- Exit is performed through **Exit** in the tray menu.

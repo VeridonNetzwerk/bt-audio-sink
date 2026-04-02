@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: BT Audio Sink Wiki
+    url: https://github.com/VeridonNetzwerk/bt-audio-sink/wiki
+    about: Check setup and troubleshooting guides before opening a bug report.

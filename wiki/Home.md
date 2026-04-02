@@ -1,34 +1,34 @@
 # BT Audio Sink Wiki
 
-Willkommen im offiziellen Wiki von **BT Audio Sink**.
+Welcome to the official wiki for **BT Audio Sink**.
 
-BT Audio Sink macht deinen Windows-PC zum **Bluetooth-Audio-Empfaenger (A2DP Sink)**. So kannst du Audio von deinem Smartphone direkt auf dem PC ausgeben und gleichzeitig Mediensteuerung (Play/Pause/Weiter/Zurueck) nutzen.
+BT Audio Sink turns your Windows PC into a **Bluetooth audio receiver (A2DP Sink)**. You can stream audio from your phone to your PC and use media controls such as Play, Pause, Next, and Previous.
 
-## Schnellzugriff
+## Quick links
 
-- [Schnellstart](Schnellstart)
+- [Quick Start](Quick-Start)
 - [Installation](Installation)
-- [Bedienung](Bedienung)
-- [System-Tray](System-Tray)
-- [Einstellungen](Einstellungen)
-- [Fehlerbehebung](Fehlerbehebung)
+- [Usage](Usage)
+- [System Tray](System-Tray)
+- [Settings](Settings)
+- [Troubleshooting](Troubleshooting)
 - [FAQ](FAQ)
-- [Architektur](Architektur)
-- [Build fuer Entwickler](Build-fuer-Entwickler)
+- [Architecture](Architecture)
+- [Developer Build](Developer-Build)
 - [MSI-Installer (WiX)](MSI-Installer)
 
-## Voraussetzungen
+## Requirements
 
-- Windows 10 2004+ (Build 19041+) oder Windows 11
-- Bluetooth-Adapter mit A2DP Sink-Unterstuetzung
-- Fuer Build aus Source: .NET 8 SDK
+- Windows 10 2004+ (build 19041+) or Windows 11
+- Bluetooth adapter with A2DP Sink support
+- .NET 8 SDK if you want to build from source
 
-## Was dieses Wiki dir bietet
+## What this wiki provides
 
-- Schritt-fuer-Schritt Erklaerungen ohne Vorwissen
-- Praxisnahe Troubleshooting-Anleitungen
-- Klare Trennung zwischen Anwender- und Entwicklerdokumentation
+- Step-by-step explanations without requiring prior knowledge
+- Practical troubleshooting guidance
+- Clear separation between user and developer documentation
 
-## Erste Schritte
+## Getting started
 
-Wenn du direkt loslegen willst, starte mit [Schnellstart](Schnellstart).
+If you want to get started immediately, begin with [Quick Start](Quick-Start).

@@ -68,6 +68,10 @@ $RECYCLE.BIN/
 
 # Publish output
 publish/
-publish_new/
+publish
 
 # Others
+push.bat
+.push-repo/
+.push-wiki/
+.push-wiki2/

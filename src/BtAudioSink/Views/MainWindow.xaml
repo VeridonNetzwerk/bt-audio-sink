@@ -130,18 +130,72 @@
                             Style="{DynamicResource SecondaryButtonStyle}"
                             Margin="0,0,8,0">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0"/>
-                            <TextBlock Text="Refresh" FontFamily="Segoe UI"/>
+                            <TextBlock Text="&#xE72C;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Refresh"
+                                       FontFamily="Segoe UI"
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding OpenBluetoothSettingsCommand}"
                             Style="{DynamicResource SecondaryButtonStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0"/>
-                            <TextBlock Text="Bluetooth Settings" FontFamily="Segoe UI"/>
+                            <TextBlock Text="&#xE713;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Margin="0,0,6,0"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Bluetooth Settings"
+                                       FontFamily="Segoe UI"
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </WrapPanel>
+
+                <!-- ========== MEDIA CONTROLS SECTION ========== -->
+                <StackPanel Margin="{DynamicResource SectionMargin}">
+                    <TextBlock Text="Media Controls"
+                               Style="{DynamicResource SectionHeaderStyle}"/>
+
+                    <Border Style="{DynamicResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding NowPlayingTitle}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding NowPlayingArtist}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Margin="0,4,0,0"
+                                       TextTrimming="CharacterEllipsis"/>
+
+                            <WrapPanel Margin="0,12,0,0" HorizontalAlignment="Left">
+                                <Button Command="{Binding PreviousTrackCommand}"
+                                        IsEnabled="{Binding CanSkipPrevious}"
+                                        Style="{DynamicResource SecondaryButtonStyle}"
+                                        Margin="0,0,8,0"
+                                        ToolTip="Previous">
+                                    <TextBlock Text="&#xE892;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                </Button>
+
+                                <Button Command="{Binding PlayPauseCommand}"
+                                        IsEnabled="{Binding CanPlayPause}"
+                                        Style="{DynamicResource PrimaryButtonStyle}"
+                                        Margin="0,0,8,0"
+                                        ToolTip="Play/Pause">
+                                    <TextBlock Text="{Binding PlayPauseGlyph}" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                </Button>
+
+                                <Button Command="{Binding NextTrackCommand}"
+                                        IsEnabled="{Binding CanSkipNext}"
+                                        Style="{DynamicResource SecondaryButtonStyle}"
+                                        ToolTip="Next">
+                                    <TextBlock Text="&#xE893;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                </Button>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
 
                 <!-- ========== SETTINGS SECTION ========== -->
                 <StackPanel Margin="{DynamicResource SectionMargin}">
