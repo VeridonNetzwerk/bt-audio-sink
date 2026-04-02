@@ -155,23 +155,18 @@
 
                 <!-- ========== MEDIA CONTROLS SECTION ========== -->
                 <StackPanel Margin="{DynamicResource SectionMargin}">
-                    <TextBlock Text="Media Controls"
+                    <TextBlock Text="Smartphone Controls"
                                Style="{DynamicResource SectionHeaderStyle}"/>
 
                     <Border Style="{DynamicResource CardStyle}">
                         <StackPanel>
-                            <TextBlock Text="{Binding NowPlayingTitle}"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextPrimaryBrush}"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="{Binding NowPlayingArtist}"
+                            <TextBlock Text="Send AVRCP media commands to the connected smartphone."
                                        Foreground="{DynamicResource TextSecondaryBrush}"
-                                       Margin="0,4,0,0"
-                                       TextTrimming="CharacterEllipsis"/>
+                                       TextWrapping="Wrap"/>
 
                             <WrapPanel Margin="0,12,0,0" HorizontalAlignment="Left">
                                 <Button Command="{Binding PreviousTrackCommand}"
-                                        IsEnabled="{Binding CanSkipPrevious}"
+                                        IsEnabled="{Binding HasConnectedDevice}"
                                         Style="{DynamicResource SecondaryButtonStyle}"
                                         Margin="0,0,8,0"
                                         ToolTip="Previous">
@@ -179,15 +174,15 @@
                                 </Button>
 
                                 <Button Command="{Binding PlayPauseCommand}"
-                                        IsEnabled="{Binding CanPlayPause}"
+                                        IsEnabled="{Binding HasConnectedDevice}"
                                         Style="{DynamicResource PrimaryButtonStyle}"
                                         Margin="0,0,8,0"
                                         ToolTip="Play/Pause">
-                                    <TextBlock Text="{Binding PlayPauseGlyph}" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                                    <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
                                 </Button>
 
                                 <Button Command="{Binding NextTrackCommand}"
-                                        IsEnabled="{Binding CanSkipNext}"
+                                        IsEnabled="{Binding HasConnectedDevice}"
                                         Style="{DynamicResource SecondaryButtonStyle}"
                                         ToolTip="Next">
                                     <TextBlock Text="&#xE893;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>

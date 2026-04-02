@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows.Media;
 using Microsoft.Win32;
 using BtAudioSink.Bluetooth;
-using BtAudioSink.Media;
 using BtAudioSink.Platform;
 using BtAudioSink.Settings;
 using BtAudioSink.ViewModels;
@@ -29,7 +28,7 @@ public partial class App : Application
     // Services
     private BluetoothDeviceService? _deviceService;
     private AudioPlaybackService? _audioService;
-    private MediaControlService? _mediaControlService;
+    private AvrcpCommandService? _avrcpCommandService;
     private SettingsManager? _settingsManager;
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -94,10 +93,10 @@ public partial class App : Application
         _settingsManager.Load();
         _deviceService = new BluetoothDeviceService();
         _audioService = new AudioPlaybackService();
-        _mediaControlService = new MediaControlService();
+        _avrcpCommandService = new AvrcpCommandService(_audioService);
 
         // Create ViewModel
-        _viewModel = new MainViewModel(_deviceService, _audioService, _mediaControlService, _settingsManager);
+        _viewModel = new MainViewModel(_deviceService, _audioService, _avrcpCommandService, _settingsManager);
         _viewModel.ExitRequested += OnExitRequested;
         _viewModel.ShowWindowRequested += OnShowWindowRequested;
         _viewModel.HideWindowRequested += OnHideWindowRequested;

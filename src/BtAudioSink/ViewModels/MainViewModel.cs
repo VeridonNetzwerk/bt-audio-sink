@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using BtAudioSink.Bluetooth;
-using BtAudioSink.Media;
 using BtAudioSink.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,7 +15,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly BluetoothDeviceService _deviceService;
     private readonly AudioPlaybackService _audioService;
-    private readonly MediaControlService _mediaControlService;
+    private readonly AvrcpCommandService _avrcpCommandService;
     private readonly SettingsManager _settingsManager;
     private bool _disposed;
 
@@ -35,29 +34,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     private int _connectedDeviceCount;
 
     public bool HasConnectedDevice => ConnectedDeviceCount > 0;
-
-    // --- Media state ---
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PlayPauseGlyph))]
-    private bool _isPlaying;
-
-    [ObservableProperty]
-    private bool _canPlayPause;
-
-    [ObservableProperty]
-    private bool _canSkipNext;
-
-    [ObservableProperty]
-    private bool _canSkipPrevious;
-
-    [ObservableProperty]
-    private string _nowPlayingTitle = "No active media session";
-
-    [ObservableProperty]
-    private string _nowPlayingArtist = "Connect a device and start playback";
-
-    public string PlayPauseGlyph => IsPlaying ? "\uE769" : "\uE768";
 
     // --- Settings ---
 
@@ -93,18 +69,17 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public MainViewModel(
         BluetoothDeviceService deviceService,
         AudioPlaybackService audioService,
-        MediaControlService mediaControlService,
+        AvrcpCommandService avrcpCommandService,
         SettingsManager settingsManager)
     {
         _deviceService = deviceService;
         _audioService = audioService;
-        _mediaControlService = mediaControlService;
+        _avrcpCommandService = avrcpCommandService;
         _settingsManager = settingsManager;
 
         // Wire up events
         _deviceService.DevicesChanged += OnDevicesChanged;
         _audioService.ConnectionChanged += OnConnectionChanged;
-        _mediaControlService.StateChanged += OnMediaStateChanged;
     }
 
     /// <summary>
@@ -112,20 +87,12 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     /// </summary>
     public Task InitializeAsync()
     {
-        return InitializeInternalAsync();
-    }
-
-    private async Task InitializeInternalAsync()
-    {
         // Load settings
         _settingsManager.Load();
         AutoReconnect = _settingsManager.Current.AutoReconnect;
         RunAtStartup = _settingsManager.IsRunAtStartupEnabled();
         StartMinimized = _settingsManager.Current.StartMinimized;
         _audioService.AutoReconnect = AutoReconnect;
-
-        // Start media session tracking for transport controls.
-        await _mediaControlService.InitializeAsync();
 
         // Start  device discovery
         _deviceService.StartWatching();
@@ -145,6 +112,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
             }
         }
 
+        return Task.CompletedTask;
     }
 
     // --- Device management ---
@@ -265,25 +233,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         });
     }
 
-    private void OnMediaStateChanged(object? sender, MediaStateChangedEventArgs e)
-    {
-        DispatchToUI(() =>
-        {
-            IsPlaying = e.IsPlaying;
-            CanPlayPause = e.CanPlayPause;
-            CanSkipNext = e.CanSkipNext;
-            CanSkipPrevious = e.CanSkipPrevious;
-
-            NowPlayingTitle = e.HasActiveSession
-                ? (string.IsNullOrWhiteSpace(e.Title) ? "Unknown Title" : e.Title)
-                : "No active media session";
-
-            NowPlayingArtist = e.HasActiveSession
-                ? (string.IsNullOrWhiteSpace(e.Artist) ? "Unknown Artist" : e.Artist)
-                : "Connect a device and start playback";
-        });
-    }
-
     // --- Commands ---
 
     [RelayCommand]
@@ -311,30 +260,48 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private async Task PlayPauseAsync()
+    private Task PlayPauseAsync()
     {
-        if (await _mediaControlService.PlayPauseAsync())
+        if (_avrcpCommandService.TryPlayPause())
         {
-            StatusText = "Media command sent: Play/Pause";
+            StatusText = "AVRCP command sent: Play/Pause";
         }
+        else if (!HasConnectedDevice)
+        {
+            StatusText = "Connect a smartphone first";
+        }
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task NextTrackAsync()
+    private Task NextTrackAsync()
     {
-        if (await _mediaControlService.NextAsync())
+        if (_avrcpCommandService.TryNext())
         {
-            StatusText = "Media command sent: Next";
+            StatusText = "AVRCP command sent: Next";
         }
+        else if (!HasConnectedDevice)
+        {
+            StatusText = "Connect a smartphone first";
+        }
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task PreviousTrackAsync()
+    private Task PreviousTrackAsync()
     {
-        if (await _mediaControlService.PreviousAsync())
+        if (_avrcpCommandService.TryPrevious())
         {
-            StatusText = "Media command sent: Previous";
+            StatusText = "AVRCP command sent: Previous";
         }
+        else if (!HasConnectedDevice)
+        {
+            StatusText = "Connect a smartphone first";
+        }
+
+        return Task.CompletedTask;
     }
 
     [RelayCommand]
@@ -423,13 +390,11 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
         _deviceService.DevicesChanged -= OnDevicesChanged;
         _audioService.ConnectionChanged -= OnConnectionChanged;
-        _mediaControlService.StateChanged -= OnMediaStateChanged;
 
         SaveConnectedDevices();
         _settingsManager.Save();
 
         _audioService.Dispose();
-        _mediaControlService.Dispose();
         _deviceService.Dispose();
     }
 }
