@@ -28,7 +28,6 @@ public partial class App : Application
     // Services
     private BluetoothDeviceService? _deviceService;
     private AudioPlaybackService? _audioService;
-    private AvrcpCommandService? _avrcpCommandService;
     private SettingsManager? _settingsManager;
 
     protected override async void OnStartup(StartupEventArgs e)
@@ -93,10 +92,9 @@ public partial class App : Application
         _settingsManager.Load();
         _deviceService = new BluetoothDeviceService();
         _audioService = new AudioPlaybackService();
-        _avrcpCommandService = new AvrcpCommandService(_audioService);
 
         // Create ViewModel
-        _viewModel = new MainViewModel(_deviceService, _audioService, _avrcpCommandService, _settingsManager);
+        _viewModel = new MainViewModel(_deviceService, _audioService, _settingsManager);
         _viewModel.ExitRequested += OnExitRequested;
         _viewModel.ShowWindowRequested += OnShowWindowRequested;
         _viewModel.HideWindowRequested += OnHideWindowRequested;

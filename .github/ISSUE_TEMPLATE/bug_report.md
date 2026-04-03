@@ -23,11 +23,6 @@ Describe what you expected to happen.
 - Bluetooth adapter model/chipset:
 - Connection type (MSI install or portable):
 
-## Media control details (if relevant)
-- Do on-screen media buttons work?
-- Do keyboard multimedia keys work?
-- Which key(s) fail? (Play/Pause, Next, Previous)
-
 ## Logs / screenshots
 Attach screenshots or relevant app output.
 

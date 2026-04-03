@@ -6,7 +6,7 @@ No. The app is designed for Bluetooth audio streaming as an A2DP sink.
 
 ## Does it work with iOS and Android?
 
-Yes, as long as the device supports A2DP and AVRCP normally.
+Yes, as long as the device supports A2DP audio source mode normally.
 
 ## Can I connect multiple devices at the same time?
 

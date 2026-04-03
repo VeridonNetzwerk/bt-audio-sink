@@ -153,45 +153,6 @@
                     </Button>
                 </WrapPanel>
 
-                <!-- ========== MEDIA CONTROLS SECTION ========== -->
-                <StackPanel Margin="{DynamicResource SectionMargin}">
-                    <TextBlock Text="Smartphone Controls"
-                               Style="{DynamicResource SectionHeaderStyle}"/>
-
-                    <Border Style="{DynamicResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="Send AVRCP media commands to the connected smartphone."
-                                       Foreground="{DynamicResource TextSecondaryBrush}"
-                                       TextWrapping="Wrap"/>
-
-                            <WrapPanel Margin="0,12,0,0" HorizontalAlignment="Left">
-                                <Button Command="{Binding PreviousTrackCommand}"
-                                        IsEnabled="{Binding HasConnectedDevice}"
-                                        Style="{DynamicResource SecondaryButtonStyle}"
-                                        Margin="0,0,8,0"
-                                        ToolTip="Previous">
-                                    <TextBlock Text="&#xE892;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
-                                </Button>
-
-                                <Button Command="{Binding PlayPauseCommand}"
-                                        IsEnabled="{Binding HasConnectedDevice}"
-                                        Style="{DynamicResource PrimaryButtonStyle}"
-                                        Margin="0,0,8,0"
-                                        ToolTip="Play/Pause">
-                                    <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
-                                </Button>
-
-                                <Button Command="{Binding NextTrackCommand}"
-                                        IsEnabled="{Binding HasConnectedDevice}"
-                                        Style="{DynamicResource SecondaryButtonStyle}"
-                                        ToolTip="Next">
-                                    <TextBlock Text="&#xE893;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
-                                </Button>
-                            </WrapPanel>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-
                 <!-- ========== SETTINGS SECTION ========== -->
                 <StackPanel Margin="{DynamicResource SectionMargin}">
                     <TextBlock Text="Settings"

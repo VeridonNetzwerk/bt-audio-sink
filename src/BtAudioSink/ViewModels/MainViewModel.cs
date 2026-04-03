@@ -15,7 +15,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly BluetoothDeviceService _deviceService;
     private readonly AudioPlaybackService _audioService;
-    private readonly AvrcpCommandService _avrcpCommandService;
     private readonly SettingsManager _settingsManager;
     private bool _disposed;
 
@@ -69,12 +68,10 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     public MainViewModel(
         BluetoothDeviceService deviceService,
         AudioPlaybackService audioService,
-        AvrcpCommandService avrcpCommandService,
         SettingsManager settingsManager)
     {
         _deviceService = deviceService;
         _audioService = audioService;
-        _avrcpCommandService = avrcpCommandService;
         _settingsManager = settingsManager;
 
         // Wire up events
@@ -257,51 +254,6 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         {
             Debug.WriteLine($"Failed to open Bluetooth settings: {ex.Message}");
         }
-    }
-
-    [RelayCommand]
-    private Task PlayPauseAsync()
-    {
-        if (_avrcpCommandService.TryPlayPause())
-        {
-            StatusText = "AVRCP command sent: Play/Pause";
-        }
-        else if (!HasConnectedDevice)
-        {
-            StatusText = "Connect a smartphone first";
-        }
-
-        return Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private Task NextTrackAsync()
-    {
-        if (_avrcpCommandService.TryNext())
-        {
-            StatusText = "AVRCP command sent: Next";
-        }
-        else if (!HasConnectedDevice)
-        {
-            StatusText = "Connect a smartphone first";
-        }
-
-        return Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private Task PreviousTrackAsync()
-    {
-        if (_avrcpCommandService.TryPrevious())
-        {
-            StatusText = "AVRCP command sent: Previous";
-        }
-        else if (!HasConnectedDevice)
-        {
-            StatusText = "Connect a smartphone first";
-        }
-
-        return Task.CompletedTask;
     }
 
     [RelayCommand]

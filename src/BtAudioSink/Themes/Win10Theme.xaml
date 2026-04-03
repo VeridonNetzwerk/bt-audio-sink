@@ -133,7 +133,7 @@
         </Setter>
     </Style>
 
-    <!-- Icon button (for media controls) -->
+    <!-- Icon button style -->
     <Style x:Key="IconButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>

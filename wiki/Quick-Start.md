@@ -23,11 +23,6 @@ Go from zero to Bluetooth audio streaming in a few minutes.
 - Start audio on your phone.
 - The sound will play through your PC.
 
-## 5. Control playback
-
-- Use the buttons in BT Audio Sink: Previous / Play-Pause / Next.
-- You can also control playback from the phone.
-
 ## Done
 
 Your PC is now working as a Bluetooth audio sink.

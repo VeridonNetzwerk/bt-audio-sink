@@ -8,7 +8,6 @@
 | "Unsupported OS" | Use at least Windows 10 version 2004 (build 19041) |
 | Connection failed | Toggle Bluetooth off and on on both devices, then reconnect |
 | No sound despite connection | Check the default output device in Windows sound settings |
-| Media controls do not respond | Verify AVRCP support on the device and media app |
 
 ## No device in the list
 
@@ -44,11 +43,6 @@ Check the following:
 3. Exclusive audio modes used by other software
 
 Note: The stream is played through the current default output device in Windows.
-
-## Media controls do not respond
-
-- Make sure playback is actually active on the phone.
-- Some apps or devices only support AVRCP partially.
 
 ## App does not start
 

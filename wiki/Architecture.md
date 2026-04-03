@@ -12,7 +12,7 @@ This keeps the functionality identical while adapting the visual design to the W
 ## Technology stack
 
 - C# / .NET 8.0 with WPF
-- Windows Runtime APIs: `AudioPlaybackConnection`, `DeviceInformation`, `GlobalSystemMediaTransportControlsSessionManager`
+- Windows Runtime APIs: `AudioPlaybackConnection`, `DeviceInformation`
 - CommunityToolkit.Mvvm for MVVM structure
 - H.NotifyIcon.Wpf for system tray integration
 - WiX Toolset v4 for the MSI installer
@@ -46,20 +46,13 @@ The view and view model logic stay the same. Only styles and resources differ be
   - State change handling
   - Optional auto reconnect
 
-## 3) Media
-
-- `MediaControlService`
-  - Uses `GlobalSystemMediaTransportControlsSessionManager`
-  - Reads title / artist / playback status
-  - Sends Play / Pause / Next / Previous
-
-## 4) Settings
+## 3) Settings
 
 - `SettingsManager`
   - JSON persistence
   - Run-at-startup registry handling
 
-## 5) Presentation (MVVM)
+## 4) Presentation (MVVM)
 
 - `MainViewModel`: central orchestration
 - `DeviceViewModel`: per-device state
@@ -72,8 +65,7 @@ The view and view model logic stay the same. Only styles and resources differ be
 3. DeviceWatcher discovers Bluetooth audio devices.
 4. The user clicks Connect.
 5. `AudioPlaybackConnection` is opened.
-6. Media session information is read and controlled through GSMTC.
-7. Settings and recently connected devices are saved.
+6. Settings and recently connected devices are saved.
 
 ## Error handling
 

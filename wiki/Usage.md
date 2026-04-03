@@ -2,15 +2,13 @@
 
 ## Main window
 
-The main window is split into four areas:
+The main window is split into three areas:
 
 1. **Header**
    App name and short description
 2. **Paired Devices**
    List of detected Bluetooth audio devices
-3. **Media Controls**
-   Current track information plus playback controls
-4. **Settings**
+3. **Settings**
    Auto reconnect, startup behavior, start minimized
 
 ## Connecting a device
@@ -22,14 +20,6 @@ The main window is split into four areas:
 ## Disconnecting a device
 
 - Click **Disconnect** on the connected device.
-
-## Media controls
-
-- **Previous**: go to the previous track
-- **Play/Pause**: start or pause playback
-- **Next**: go to the next track
-
-The controls use the Windows media session system (GSMTC).
 
 ## Status bar
 

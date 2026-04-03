@@ -2,9 +2,7 @@
 
 # 📶 BT Audio Sink
 
-**Bluetooth A2DP Audio Sink for Windows — Stream audio from your smartphone to your PC and control playback from either device.**
-
-BT Audio Sink turns your Windows PC into a Bluetooth audio receiver (A2DP Sink). Pair your phone, connect through the app, and your phone's audio plays through your PC speakers. Media controls (play, pause, next, previous) work bidirectionally between both devices.
+**Bluetooth A2DP Audio Sink for Windows — Stream audio from your smartphone to your PC.**
 
 <p>
   <a href="https://github.com/VeridonNetzwerk/bt-audio-sink/blob/main/LICENSE">
@@ -57,8 +55,6 @@ Download the ZIP archive from [Releases](https://github.com/VeridonNetzwerk/bt-a
 3. **Click the tray icon** to open the device picker
 4. **Select your device** and click **Connect**
 5. **Play music** on your phone — audio streams to your PC speakers
-6. **Control playback** using the media buttons in the app (**Previous / Play-Pause / Next**)
-7. **Use keyboard multimedia keys** (Play/Pause, Next, Previous) while BT Audio Sink is running
 
 ### System Tray
 

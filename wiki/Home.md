@@ -2,7 +2,7 @@
 
 Welcome to the official wiki for **BT Audio Sink**.
 
-BT Audio Sink turns your Windows PC into a **Bluetooth audio receiver (A2DP Sink)**. You can stream audio from your phone to your PC and use media controls such as Play, Pause, Next, and Previous.
+BT Audio Sink turns your Windows PC into a **Bluetooth audio receiver (A2DP Sink)**. You can stream audio from your phone to your PC.
 
 ## Quick links
 

@@ -154,7 +154,7 @@
         </Setter>
     </Style>
 
-    <!-- Icon button (for media controls) with rounded hover -->
+    <!-- Icon button style with rounded hover -->
     <Style x:Key="IconButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>

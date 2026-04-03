@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using BtAudioSink.Platform;
@@ -14,18 +12,7 @@ namespace BtAudioSink.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private const int WmHotkey = 0x0312;
-    private const uint ModNorepeat = 0x4000;
-    private const uint VkMediaNextTrack = 0xB0;
-    private const uint VkMediaPrevTrack = 0xB1;
-    private const uint VkMediaPlayPause = 0xB3;
-
-    private const int HotkeyIdPlayPause = 1;
-    private const int HotkeyIdNext = 2;
-    private const int HotkeyIdPrevious = 3;
-
     private bool _forceClose;
-    private HwndSource? _hwndSource;
 
     public MainWindow()
     {
@@ -47,76 +34,10 @@ public partial class MainWindow : Window
     /// </summary>
     private void OnSourceInitialized(object? sender, EventArgs e)
     {
-        _hwndSource = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
-        _hwndSource?.AddHook(WndProc);
-        RegisterMediaHotkeys();
-
         if (OsDetector.IsWindows11)
         {
             ApplyMicaBackdrop();
         }
-    }
-
-    private void RegisterMediaHotkeys()
-    {
-        var hwnd = new WindowInteropHelper(this).Handle;
-        if (hwnd == IntPtr.Zero)
-        {
-            return;
-        }
-
-        RegisterSingleHotkey(hwnd, HotkeyIdPlayPause, VkMediaPlayPause);
-        RegisterSingleHotkey(hwnd, HotkeyIdNext, VkMediaNextTrack);
-        RegisterSingleHotkey(hwnd, HotkeyIdPrevious, VkMediaPrevTrack);
-    }
-
-    private static void RegisterSingleHotkey(IntPtr hwnd, int id, uint virtualKey)
-    {
-        if (!RegisterHotKey(hwnd, id, ModNorepeat, virtualKey))
-        {
-            Debug.WriteLine($"RegisterHotKey failed for id={id}, vk=0x{virtualKey:X2}, error={Marshal.GetLastWin32Error()}");
-        }
-    }
-
-    private void UnregisterMediaHotkeys()
-    {
-        var hwnd = new WindowInteropHelper(this).Handle;
-        if (hwnd == IntPtr.Zero)
-        {
-            return;
-        }
-
-        UnregisterHotKey(hwnd, HotkeyIdPlayPause);
-        UnregisterHotKey(hwnd, HotkeyIdNext);
-        UnregisterHotKey(hwnd, HotkeyIdPrevious);
-    }
-
-    private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-    {
-        if (msg != WmHotkey || DataContext is not MainViewModel vm)
-        {
-            return IntPtr.Zero;
-        }
-
-        switch (wParam.ToInt32())
-        {
-            case HotkeyIdPlayPause:
-                vm.PlayPauseCommand.Execute(null);
-                handled = true;
-                break;
-
-            case HotkeyIdNext:
-                vm.NextTrackCommand.Execute(null);
-                handled = true;
-                break;
-
-            case HotkeyIdPrevious:
-                vm.PreviousTrackCommand.Execute(null);
-                handled = true;
-                break;
-        }
-
-        return IntPtr.Zero;
     }
 
     /// <summary>
@@ -207,14 +128,6 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        UnregisterMediaHotkeys();
-
-        if (_hwndSource != null)
-        {
-            _hwndSource.RemoveHook(WndProc);
-            _hwndSource = null;
-        }
-
         base.OnClosed(e);
     }
 
@@ -236,9 +149,4 @@ public partial class MainWindow : Window
         Close();
     }
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 }

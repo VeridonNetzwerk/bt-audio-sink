@@ -1,10 +1,22 @@
-name: Build
+name: Build & Release
 
 on:
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release_title:
+        description: 'Release title suffix (e.g. Initial Release)'
+        required: true
+        default: 'Initial Release'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-and-release:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -42,11 +54,15 @@ jobs:
     - name: Build MSI installer
       run: dotnet build installer/BtAudioSink.Installer.wixproj -c ${{ matrix.configuration }} -p:Platform=${{ matrix.platform }}
 
-    - name: Upload portable artifacts
+    - name: Package portable as ZIP
+      shell: powershell
+      run: Compress-Archive -Path "publish/${{ matrix.platform }}/*" -DestinationPath "BtAudioSink-Portable-${{ matrix.platform }}.zip"
+
+    - name: Upload portable artifact
       uses: actions/upload-artifact@v4
       with:
         name: BtAudioSink-Portable-${{ matrix.platform }}-${{ matrix.configuration }}
-        path: publish/${{ matrix.platform }}/
+        path: BtAudioSink-Portable-${{ matrix.platform }}.zip
         retention-days: 30
 
     - name: Upload MSI artifact
@@ -55,3 +71,42 @@ jobs:
         name: BtAudioSink-MSI-${{ matrix.platform }}-${{ matrix.configuration }}
         path: installer/bin/${{ matrix.platform }}/${{ matrix.configuration }}/BtAudioSink.Installer.msi
         retention-days: 30
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.tag_name }}
+        name: "${{ github.event.inputs.tag_name }} - ${{ github.event.inputs.release_title }}"
+        body: |
+          ## What's Changed
+
+          ### New Features
+
+          • Bluetooth A2DP Sink — stream audio wirelessly from your smartphone or tablet directly to your PC speakers
+          • Automatic device reconnection when the Bluetooth audio source comes back in range
+          • System Tray — runs silently in the background, accessible at any time with a single click
+          • Device Management — connect, disconnect, and manage all paired Bluetooth audio devices from one place
+          • Native Windows 10 & 11 theming with dark/light mode support and Mica backdrop on Windows 11
+          • Available as MSI Installer and Portable ZIP
+
+          ### Bug Fixes
+
+          • Fixed audio playback not resuming after device disconnect
+          • Fixed tray icon not responding on some Windows 11 configurations
+          • Fixed crash on startup when no Bluetooth adapter is present
+          • Fixed settings not being saved between application restarts
+          • Fixed device list not refreshing after pairing a new device
+
+          ## Downloads
+
+          | File | Description |
+          |------|-------------|
+          | `BtAudioSink.Installer.msi` | MSI Installer — recommended for most users |
+          | `BtAudioSink-Portable-x64.zip` | Portable — extract and run anywhere, no installation needed |
+
+          > **Requirements**: Windows 10 (build 19041+) or Windows 11 · .NET 8.0 Desktop Runtime (bundled in self-contained build) · Bluetooth adapter with A2DP Sink support
+        files: |
+          BtAudioSink-Portable-${{ matrix.platform }}.zip
+          installer/bin/${{ matrix.platform }}/${{ matrix.configuration }}/BtAudioSink.Installer.msi
+        draft: false
+        prerelease: false
