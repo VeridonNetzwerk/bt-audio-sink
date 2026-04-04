@@ -16,6 +16,11 @@ public sealed class AppSettings
     public bool RunAtStartup { get; set; }
 
     /// <summary>
+    /// Whether startup should use high process priority via a scheduled task.
+    /// </summary>
+    public bool RunAtStartupHighPriority { get; set; }
+
+    /// <summary>
     /// Whether the application should start minimized to the system tray.
     /// </summary>
     public bool StartMinimized { get; set; } = false;

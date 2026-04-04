@@ -10,6 +10,7 @@ using BtAudioSink.Settings;
 using BtAudioSink.ViewModels;
 using BtAudioSink.Views;
 using H.NotifyIcon;
+using System.Linq;
 
 namespace BtAudioSink;
 
@@ -19,6 +20,8 @@ namespace BtAudioSink;
 /// </summary>
 public partial class App : Application
 {
+    private const string StartupArgument = "--startup";
+
     private Mutex? _singleInstanceMutex;
     private TaskbarIcon? _trayIcon;
     private MainWindow? _mainWindow;
@@ -90,6 +93,15 @@ public partial class App : Application
         // Initialize services
         _settingsManager = new SettingsManager();
         _settingsManager.Load();
+
+        bool launchedFromStartup = e.Args.Any(arg =>
+            string.Equals(arg, StartupArgument, StringComparison.OrdinalIgnoreCase));
+
+        if (launchedFromStartup && _settingsManager.Current.RunAtStartupHighPriority)
+        {
+            TrySetCurrentProcessHighPriority();
+        }
+
         _deviceService = new BluetoothDeviceService();
         _audioService = new AudioPlaybackService();
 
@@ -108,11 +120,24 @@ public partial class App : Application
         // Initialize ViewModel (loads settings, starts discovery, etc.)
         await _viewModel.InitializeAsync();
 
-        // Show window unless configured to start minimized
-        if (!_settingsManager.Current.StartMinimized)
+        // Start minimized only when launched via startup entry.
+        bool startMinimized = launchedFromStartup && _settingsManager.Current.StartMinimized;
+        if (!startMinimized)
         {
             _mainWindow.Show();
             _viewModel.IsWindowVisible = true;
+        }
+    }
+
+    private static void TrySetCurrentProcessHighPriority()
+    {
+        try
+        {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to set high priority: {ex.Message}");
         }
     }
 

@@ -17,6 +17,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     private readonly AudioPlaybackService _audioService;
     private readonly SettingsManager _settingsManager;
     private bool _disposed;
+    private bool _suppressStartupCallbacks;
 
     /// <summary>
     /// Collection of discovered Bluetooth devices.
@@ -43,7 +44,18 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
     private bool _runAtStartup;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RunAtStartupHighPriorityButtonText))]
+    [NotifyPropertyChangedFor(nameof(ShowRunAtStartupOption))]
+    private bool _runAtStartupHighPriority;
+
+    [ObservableProperty]
     private bool _startMinimized;
+
+    public string RunAtStartupHighPriorityButtonText => RunAtStartupHighPriority
+        ? "Remove High Priority"
+        : "High Priority";
+
+    public bool ShowRunAtStartupOption => !RunAtStartupHighPriority;
 
     // --- Window state ---
 
@@ -87,7 +99,7 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         // Load settings
         _settingsManager.Load();
         AutoReconnect = _settingsManager.Current.AutoReconnect;
-        RunAtStartup = _settingsManager.IsRunAtStartupEnabled();
+        SyncStartupSettingsFromSystem();
         StartMinimized = _settingsManager.Current.StartMinimized;
         _audioService.AutoReconnect = AutoReconnect;
 
@@ -291,6 +303,17 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         ExitRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    [RelayCommand]
+    private void ToggleHighPriority()
+    {
+        if (!RunAtStartup && !RunAtStartupHighPriority)
+        {
+            RunAtStartup = true;
+        }
+
+        RunAtStartupHighPriority = !RunAtStartupHighPriority;
+    }
+
     // --- Settings handlers ---
 
     partial void OnAutoReconnectChanged(bool value)
@@ -302,7 +325,34 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
 
     partial void OnRunAtStartupChanged(bool value)
     {
-        _settingsManager.SetRunAtStartup(value);
+        if (_suppressStartupCallbacks)
+        {
+            return;
+        }
+
+        _settingsManager.SetRunAtStartup(value, RunAtStartupHighPriority);
+        SyncStartupSettingsFromSystem();
+    }
+
+    partial void OnRunAtStartupHighPriorityChanged(bool value)
+    {
+        if (_suppressStartupCallbacks)
+        {
+            return;
+        }
+
+        _settingsManager.Current.RunAtStartupHighPriority = value;
+
+        if (RunAtStartup)
+        {
+            _settingsManager.SetRunAtStartup(true, value);
+        }
+        else
+        {
+            _settingsManager.Save();
+        }
+
+        SyncStartupSettingsFromSystem();
     }
 
     partial void OnStartMinimizedChanged(bool value)
@@ -328,6 +378,20 @@ public sealed partial class MainViewModel : ObservableObject, IDisposable
         else
         {
             Application.Current?.Dispatcher?.BeginInvoke(action);
+        }
+    }
+
+    private void SyncStartupSettingsFromSystem()
+    {
+        _suppressStartupCallbacks = true;
+        try
+        {
+            RunAtStartup = _settingsManager.IsRunAtStartupEnabled();
+            RunAtStartupHighPriority = _settingsManager.IsRunAtStartupHighPriorityEnabled();
+        }
+        finally
+        {
+            _suppressStartupCallbacks = false;
         }
     }
 
