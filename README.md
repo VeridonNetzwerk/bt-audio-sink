@@ -2,7 +2,7 @@
 
 # 📶 BT Audio Sink
 
-**Bluetooth A2DP Audio Sink for Windows — Stream audio from your smartphone to your PC.**![alt text](image.png)
+**Bluetooth A2DP Audio Sink for Windows — Stream audio from your smartphone to your PC.**
 
 <p>
   <a href="https://github.com/VeridonNetzwerk/bt-audio-sink/blob/main/LICENSE">
